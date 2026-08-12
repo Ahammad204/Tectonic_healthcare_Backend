@@ -18,4 +18,10 @@ const main = async () => {
     }
 }
 
-main();
+// Only run in development or when explicitly called
+if (process.env.NODE_ENV !== 'production') {
+    main();
+}
+
+// Export for Vercel serverless functions
+export default app;
