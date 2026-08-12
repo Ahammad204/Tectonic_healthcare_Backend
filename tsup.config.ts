@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/vercel.ts"],
+  entry: ["src/server.ts"],
   format: ["esm"],
   target: "esnext",
   outDir: "dist",
@@ -10,9 +10,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   banner: {
-    js: `
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-    `,
+    js: `import { createRequire } from 'module';
+const require = createRequire(import.meta.url);`,
   },
 });
