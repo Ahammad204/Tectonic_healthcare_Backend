@@ -9,13 +9,17 @@ import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { jwtUtils } from "../../utils/jwt";
 import type {
+  IForgotPasswordPayload,
   IGoogleLoginPayload,
   ILoginUserPayload,
   IRegisterPatientPayload,
   IRequestUser,
+  IResetPasswordPayload,
 } from "./auth.interface";
 import { OAuth2Client, type TokenPayload } from "google-auth-library";
 import { googleClient } from "../../lib/googleAuth";
+import crypto from "crypto";
+import { RedisClient } from "../../lib/redis";
 
 const registerPatient = async (payload: IRegisterPatientPayload) => {
   const { name, password, patient: patientData } = payload;
@@ -344,12 +348,46 @@ const googleLogin = async (payload: IGoogleLoginPayload) => {
   };
 };
 
-const forgetPassword = (payload:any) => {
-  
-}
-const resetPassword = (payload:any) => {
+const forgetPassword = async (payload: IForgotPasswordPayload) => {
+  const { email } = payload;
 
-}
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new Error("User does not exist");
+  }
+
+  if (isUserExist.status === "BLOCKED") {
+    throw new Error("User is blocked");
+  }
+
+  if (!isUserExist.emailVerified) {
+    throw new Error("Email is not verified");
+  }
+
+  if (isUserExist.isDeleted || isUserExist.status === "DELETED") {
+    throw new Error("User is deleted");
+  }
+
+  if (isUserExist.googleId && isUserExist.authProvider !== "GOOGLE") {
+    throw new Error("User has account with google");
+  }
+
+  const otp = crypto.randomInt(100000, 1000000).toString();
+  const key = `forgot-password-otp:${isUserExist.email}`;
+
+  await RedisClient.set(key, otp, {
+    expiration: {
+      type: "EX",
+      value: 5 * 60,
+    },
+  });
+};
+const resetPassword = (payload: IResetPasswordPayload) => {};
 
 export const AuthService = {
   registerPatient,
@@ -358,5 +396,5 @@ export const AuthService = {
   refreshToken,
   googleLogin,
   forgetPassword,
-  resetPassword
+  resetPassword,
 };
