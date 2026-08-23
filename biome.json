@@ -5,9 +5,13 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
-  "files": {
-    "includes": ["**", "!!**/dist"]
-  },
+ "files": {
+	"includes": [
+		"**",
+		"!!**/dist",
+		"!!src/app/templates"
+	]
+},
   "formatter": {
     "enabled": true,
     "indentStyle": "tab"
