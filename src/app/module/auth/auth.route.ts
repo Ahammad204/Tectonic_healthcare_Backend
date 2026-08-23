@@ -7,7 +7,6 @@ import { catchAsync } from "../../utils/catchAsync";
 import { validateRequest } from "../../middleware/validateRequest";
 import { UserValidation } from "./auth.validation";
 
-
 const router = Router();
 
 router.post(
@@ -27,6 +26,10 @@ router.get(
 );
 router.post("/refresh-token", AuthController.refreshToken);
 router.post("/google", AuthController.googleLogin);
-router.post("/forgot-password", AuthController.forgotPassword);
-router.post("/reset-password", AuthController.resetPassword);
+router.post(
+  "/forgot-password",
+  validateRequest(UserValidation.forgotPasswordZodSchema),
+  AuthController.forgotPassword,
+);
+router.post("/reset-password",  validateRequest(UserValidation.resetPasswordZodSchema),AuthController.resetPassword);
 export const AuthRoutes = router;
