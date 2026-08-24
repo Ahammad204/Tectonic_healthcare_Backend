@@ -11,13 +11,16 @@ const uploadProfileImage = catchAsync(async (req: Request, res: Response) => {
 
   const userId = req.user?.userId;
 
-  await UserServices.uploadProfileImage(req.file?.buffer,userId);
+  const result = await UserServices.uploadProfileImage(
+    req.file?.buffer,
+    userId!,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Verification OTP Sent successfully",
-    data: null,
+    message: "Image Updated successfully",
+    data: result,
   });
 });
 
