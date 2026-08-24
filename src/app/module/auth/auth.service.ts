@@ -41,49 +41,102 @@ const registerPatient = async (payload: IRegisterPatientPayload) => {
     Number(config.bcrypt_salt_rounds),
   );
 
-  const createdUser = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-      role: Role.PATIENT,
-      status: UserStatus.ACTIVE,
-      emailVerified: false,
-      patient: {
-        create: { name, email, contactNumber: patientData?.contactNumber },
-      },
+  const otpValue = crypto.randomInt(100000, 1000000).toString();
+  const otpKey = `patient-registration-otp:${email}`;
+  const expireTime = 5 * 60;
+
+  await RedisClient.set(otpKey, otpValue, {
+    expiration: {
+      type: "EX",
+      value: expireTime,
     },
-    omit: { password: true },
-    include: { patient: true },
   });
 
-  const { patient, ...user } = createdUser;
-  const jwtPayload = {
-    userId: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
+  const patientRegistrationKey = `patient-registration-data:${email}`;
+
+  const redisUserDataPayload = {
+    name,
+    email,
+    password: hashedPassword,
+    patient: patientData,
   };
 
-  const accessToken = jwtUtils.createToken(
-    jwtPayload,
-    config.jwt_access_secret,
-    config.jwt_access_expires_in as SignOptions,
+  await RedisClient.set(
+    patientRegistrationKey,
+    JSON.stringify(redisUserDataPayload),
+    {
+      expiration: {
+        type: "EX",
+        value: expireTime,
+      },
+    },
   );
 
-  const refreshToken = jwtUtils.createToken(
-    jwtPayload,
-    config.jwt_refresh_secret,
-    config.jwt_refresh_expires_in as SignOptions,
+ 
+  const templatePath = path.join(
+    process.cwd(),
+    "src/app/templates/registration-user-otp.ejs",
   );
-
-  return {
-    user,
-    patient,
-    accessToken,
-    refreshToken,
+  const templateData = {
+    name,
+    email,
+    otpValue,
+    expirationMinute: expireTime / 60,
   };
+
+  const html = await ejs.renderFile(templatePath, templateData);
+
+  await transporter.sendMail({
+    from: config.email_sender,
+    to: email,
+    subject: "Verify your Tectonic Healthcare account",
+    html,
+  });
 };
+
+ // const createdUser = await prisma.user.create({
+  //   data: {
+  //     name,
+  //     email,
+  //     password: hashedPassword,
+  //     role: Role.PATIENT,
+  //     status: UserStatus.ACTIVE,
+  //     emailVerified: false,
+  //     patient: {
+  //       create: { name, email, contactNumber: patientData?.contactNumber },
+  //     },
+  //   },
+  //   omit: { password: true },
+  //   include: { patient: true },
+  // });
+
+  // const { patient, ...user } = createdUser;
+  // const jwtPayload = {
+  //   userId: user.id,
+  //   name: user.name,
+  //   email: user.email,
+  //   role: user.role,
+  // };
+
+  // const accessToken = jwtUtils.createToken(
+  //   jwtPayload,
+  //   config.jwt_access_secret,
+  //   config.jwt_access_expires_in as SignOptions,
+  // );
+
+  // const refreshToken = jwtUtils.createToken(
+  //   jwtPayload,
+  //   config.jwt_refresh_secret,
+  //   config.jwt_refresh_expires_in as SignOptions,
+  // );
+
+  // return {
+  //   user,
+  //   patient,
+  //   accessToken,
+  //   refreshToken,
+  // };
+
 
 const loginUser = async (payload: ILoginUserPayload) => {
   const { password } = payload;
@@ -385,12 +438,12 @@ const forgetPassword = async (payload: IForgotPasswordPayload) => {
 
   const otp = crypto.randomInt(100000, 1000000).toString();
   const key = `forgot-password-otp:${isUserExist.email}`;
-  const expireTime = 5 * 60
+  const expireTime = 5 * 60;
 
   await RedisClient.set(key, otp, {
     expiration: {
       type: "EX",
-      value: expireTime
+      value: expireTime,
     },
   });
 
@@ -409,7 +462,7 @@ const forgetPassword = async (payload: IForgotPasswordPayload) => {
     from: config.email_sender,
     to: isUserExist.email,
     subject: "Forgot password",
-    html
+    html,
   });
 };
 const resetPassword = async (payload: IResetPasswordPayload) => {
@@ -480,7 +533,7 @@ const resetPassword = async (payload: IResetPasswordPayload) => {
     from: config.email_sender,
     to: isUserExist.email,
     subject: "Reset Password",
-    html
+    html,
   });
 
   await RedisClient.del([key]);
