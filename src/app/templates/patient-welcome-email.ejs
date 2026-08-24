@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Welcome to Tectonic Healthcare</title>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f4f8f7;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #17201e;
+    "
+  >
+    <table
+      role="presentation"
+      width="100%"
+      cellspacing="0"
+      cellpadding="0"
+      border="0"
+      style="background-color: #f4f8f7; padding: 40px 16px"
+    >
+      <tr>
+        <td align="center">
+          <!-- Main Container -->
+          <table
+            role="presentation"
+            width="100%"
+            cellspacing="0"
+            cellpadding="0"
+            border="0"
+            style="
+              max-width: 600px;
+              background-color: #ffffff;
+              border-radius: 20px;
+              overflow: hidden;
+              box-shadow: 0 8px 30px rgba(15, 118, 110, 0.08);
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                style="
+                  background: linear-gradient(135deg, #0f766e, #115e59);
+                  padding: 34px 40px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    letter-spacing: -0.5px;
+                  "
+                >
+                  Tectonic
+                </div>
+
+                <div
+                  style="
+                    margin-top: 5px;
+                    font-size: 13px;
+                    color: #ccfbf1;
+                    letter-spacing: 1.5px;
+                    text-transform: uppercase;
+                  "
+                >
+                  Healthcare
+                </div>
+              </td>
+            </tr>
+
+            <!-- Welcome Content -->
+            <tr>
+              <td style="padding: 44px 40px 38px">
+                <!-- Welcome Icon -->
+                <div
+                  style="
+                    width: 64px;
+                    height: 64px;
+                    line-height: 64px;
+                    text-align: center;
+                    border-radius: 50%;
+                    background-color: #ccfbf1;
+                    color: #0f766e;
+                    font-size: 30px;
+                    font-weight: 700;
+                  "
+                >
+                  ♥
+                </div>
+
+                <h1
+                  style="
+                    margin: 24px 0 12px;
+                    font-size: 30px;
+                    line-height: 1.25;
+                    color: #17201e;
+                  "
+                >
+                  Welcome to Tectonic Healthcare
+                </h1>
+
+                <p
+                  style="
+                    margin: 0 0 18px;
+                    font-size: 16px;
+                    line-height: 1.7;
+                    color: #52615e;
+                  "
+                >
+                  Hello <strong style="color: #17201e"><%= name %></strong>,
+                </p>
+
+                <p
+                  style="
+                    margin: 0 0 24px;
+                    font-size: 15px;
+                    line-height: 1.8;
+                    color: #52615e;
+                  "
+                >
+                  We're happy to welcome you to Tectonic Healthcare. Your
+                  patient account has been successfully created, and you're now
+                  ready to use our healthcare platform.
+                </p>
+
+                <!-- Account Card -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellspacing="0"
+                  cellpadding="0"
+                  border="0"
+                  style="margin: 24px 0"
+                >
+                  <tr>
+                    <td
+                      style="
+                        padding: 20px;
+                        background-color: #f8faf9;
+                        border: 1px solid #e8efed;
+                        border-radius: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 12px;
+                          font-weight: 700;
+                          color: #0f766e;
+                          letter-spacing: 1px;
+                          text-transform: uppercase;
+                          margin-bottom: 14px;
+                        "
+                      >
+                        Account information
+                      </div>
+
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
+                      >
+                        <tr>
+                          <td
+                            style="
+                              padding: 7px 0;
+                              font-size: 13px;
+                              color: #7a8884;
+                              width: 80px;
+                            "
+                          >
+                            Name
+                          </td>
+
+                          <td
+                            style="
+                              padding: 7px 0;
+                              font-size: 14px;
+                              font-weight: 600;
+                              color: #34413e;
+                            "
+                          >
+                            <%= name %>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td
+                            style="
+                              padding: 7px 0;
+                              font-size: 13px;
+                              color: #7a8884;
+                            "
+                          >
+                            Email
+                          </td>
+
+                          <td
+                            style="
+                              padding: 7px 0;
+                              font-size: 14px;
+                              color: #34413e;
+                              word-break: break-word;
+                            "
+                          >
+                            <%= email %>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Message -->
+                <div
+                  style="
+                    padding: 18px 20px;
+                    background-color: #f0fdfa;
+                    border-left: 4px solid #0f766e;
+                    border-radius: 8px;
+                  "
+                >
+                  <p
+                    style="
+                      margin: 0;
+                      font-size: 14px;
+                      line-height: 1.7;
+                      color: #52615e;
+                    "
+                  >
+                    Your healthcare journey matters to us. We aim to make your
+                    experience simple, secure, and convenient.
+                  </p>
+                </div>
+
+                <p
+                  style="
+                    margin: 28px 0 0;
+                    font-size: 14px;
+                    line-height: 1.7;
+                    color: #687572;
+                  "
+                >
+                  Thank you for choosing Tectonic Healthcare. We're glad to have
+                  you with us.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                style="
+                  padding: 26px 40px;
+                  background-color: #f8faf9;
+                  border-top: 1px solid #edf2f0;
+                  text-align: center;
+                "
+              >
+                <p
+                  style="
+                    margin: 0 0 8px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #6b7975;
+                  "
+                >
+                  Tectonic Healthcare
+                </p>
+
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 12px;
+                    line-height: 1.5;
+                    color: #9aa5a2;
+                  "
+                >
+                  This is an automated message. Please do not reply to this
+                  email.
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Copyright -->
+          <p
+            style="
+              margin: 18px 0 0;
+              font-size: 11px;
+              line-height: 1.5;
+              color: #9aa5a2;
+              text-align: center;
+            "
+          >
+            © Tectonic Healthcare. All rights reserved.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+```

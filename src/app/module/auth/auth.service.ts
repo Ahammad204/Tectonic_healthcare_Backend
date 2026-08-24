@@ -155,6 +155,26 @@ const verifyPatientEmail = async (payload: IVerifyEmailPayload) => {
     include: { patient: true },
   });
 
+  await RedisClient.del(patientRegistrationKey);
+
+  const templatePath = path.join(
+    process.cwd(),
+    "src/app/templates/patient-welcome-email.ejs",
+  );
+  const templateData = {
+    name: createdUser.name,
+    email: createdUser.email,
+  };
+
+  const html = await ejs.renderFile(templatePath, templateData);
+
+  await transporter.sendMail({
+    from: config.email_sender,
+    to: email,
+    subject: "Welcome To Tectonic Healthcare",
+    html,
+  });
+
   const { patient, ...user } = createdUser;
   const jwtPayload = {
     userId: user.id,
@@ -394,6 +414,27 @@ const googleLogin = async (payload: IGoogleLoginPayload) => {
             },
           },
         },
+      });
+
+      const name = user.name;
+      const email = user.email;
+
+      const templatePath = path.join(
+        process.cwd(),
+        "src/app/templates/patient-welcome-email.ejs",
+      );
+      const templateData = {
+        name,
+        email,
+      };
+
+      const html = await ejs.renderFile(templatePath, templateData);
+
+      await transporter.sendMail({
+        from: config.email_sender,
+        to: email,
+        subject: "Welcome To Tectonic Healthcare",
+        html,
       });
     }
 
