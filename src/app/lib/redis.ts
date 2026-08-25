@@ -10,10 +10,8 @@ export const RedisClient = createClient({
   },
 });
 
-// RedisClient.on("error", (err) => console.log("Redis Client Error", err));
-
-// await RedisClient.connect();
-
-// await RedisClient.set("foo", "bar");
-// const result = await RedisClient.get("foo");
-// console.log(result); // >>> bar
+export const connectRedis = async () => {
+  if (!RedisClient.isOpen) {
+    await RedisClient.connect();
+  }
+};

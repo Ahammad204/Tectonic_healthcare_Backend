@@ -1,7 +1,8 @@
 import config from "../config";
-import { RedisClient } from "./redis";
+import { connectRedis, RedisClient } from "./redis";
 
 export const getBkashIdToken = async () => {
+  await connectRedis();
   try {
     const IdTokenKey = "bkash:idToken";
     const RefreshTokenKey = "bkash:refreshToken";
