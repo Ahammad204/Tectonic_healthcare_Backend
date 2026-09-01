@@ -18,17 +18,12 @@ const bookAppointment = catchAsync(async (req: Request, res: Response) => {
 });
 const bookAppointmentCallback = catchAsync(
   async (req: Request, res: Response) => {
-    const { executePaymentResult, redirectUrl } =
+    const {  redirectUrl } =
       await AppointmentServices.bookAppointmentCallback(req.query);
 
     res.redirect(redirectUrl);
 
-    // sendResponse(res, {
-    //   statusCode: httpStatus.CREATED,
-    //   success: true,
-    //   message: "bkash payment successfully",
-    //   data: null,
-    // });
+
   },
 );
 
