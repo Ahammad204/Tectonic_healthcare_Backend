@@ -13,7 +13,7 @@ const applyAsDoctor = async (
 ) => {
   const isUserExists = await prisma.user.findUnique({
     where: {
-      email: payload.email,
+      email: payload.user.email,
     },
   });
 
@@ -79,30 +79,37 @@ const applyAsDoctor = async (
     Number(config.bcrypt_salt_rounds),
   );
 
-  const doctorApplication = await prisma.user.create({
-    data: {
-      ...payload.user,
-      password: hashedPassword,
-      role: Role.DOCTOR,
-
-      doctor: {
-        create: {
+    const doctorApplication = await prisma.user.create({
+        data: {
           name: payload.user.name,
           email: payload.user.email,
-          contactNumber: payload.user.contactNumber,
-          specialization: payload.doctor.specialization,
-          experience: payload.doctor.experience,
-          ...payload.doctor,
-          resumeUrl: resumeResult.secure_url,
-          resumePublicId: resumeResult.public_id,
-          additionalFiles: additionalFilesResult.map((file) => ({
-            url: file.secure_url,
-            publicId: file.public_id,
-          })),
+          password: hashedPassword,
+          role: Role.DOCTOR,
+          needPasswordChange: true,
+          doctor: {
+            create: {
+              name: payload.user.name,
+              email: payload.user.email,
+              contactNumber: payload.doctor.contactNumber,
+              specialization: payload.doctor.specialization,
+              licenseNumber: payload.doctor.licenseNumber,
+              qualifications: payload.doctor.qualifications,
+              experienceYears: payload.doctor.experienceYears ?? 0,
+              bio: payload.doctor.bio,
+              consultationFee: payload.doctor.consultationFee,
+              resume: resumeResult.secure_url,
+              resumePublicId: resumeResult.public_id,
+              additionalFiles: additionalFilesResult.map((file) => ({
+                url: file.secure_url,
+                publicId: file.public_id,
+              })),
+            },
+          },
         },
-      },
-    },
-  });
+        include: {
+          doctor: true,
+        },
+      })
 
   return doctorApplication;
 };

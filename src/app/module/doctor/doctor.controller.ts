@@ -3,17 +3,27 @@ import { DoctorServices } from "./doctor.service";
 import httpStatus from "http-status";
 import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
+import { ApplyAsDoctorValidationZodSchema } from "./doctor.validation";
 
 const applyAsDoctor = catchAsync(async (req: Request, res: Response) => {
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
   const resume = files?.["resume"] ? files["resume"][0] : null;
   const additionalFiles = files?.["additionalFiles"] || [];
-  const data = JSON.parse(req.body.data);
+  const zodValidationResult = ApplyAsDoctorValidationZodSchema.safeParse(
+    JSON.parse(req.body.data),
+  );
+
+  if (!zodValidationResult.success) {
+    throw new Error(`Validation failed: ${zodValidationResult.error.message}`);
+  }
+
+  const payload = zodValidationResult.data;
+
   if (!resume) {
     throw new Error("Resume is required");
   }
   const result = await DoctorServices.applyAsDoctor(
-    data,
+    payload,
     resume,
     additionalFiles,
   );
